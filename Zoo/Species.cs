@@ -2,6 +2,11 @@ using System;
 
 namespace Zoo
 {
+    /*
+    역할 : 동물의 종 표현
+    책임 : Species 이름 유효성 검사, Species Equals 비교, 
+    Species - String 암시적 변환(짜피 state가 string _value 밖에 없으니까), Species 간 연산자 오버라이딩 
+    */
     public class Species
     {
         private readonly string _value;

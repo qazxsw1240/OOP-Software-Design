@@ -6,7 +6,10 @@ namespace Zoo
     {
         private static void Main()
         {
-            Application application = new(Console.Out, Console.In, []);
+            Application application = new(Console.Out, Console.In, [
+                new AnimalPrintAction(),
+                new AnimalAddAction()
+            ]);
             application.Start();
         }
     }

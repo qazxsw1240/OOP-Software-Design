@@ -1,111 +1,132 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Zoo
 {
-    public class Application(TextReader textReader)
+    public class Application(
+        TextWriter textWriter,
+        TextReader textReader,
+        List<IApplicationAction> actions)
     {
         private readonly AnimalCollection _animalCollection = new();
+        private readonly IoProcessor _ioProcessor = new(
+            textWriter,
+            textReader,
+            new DefaultApplicationInputResultProvider());
 
         public void Start()
         {
-            PrintMenu();
-            for (ApplicationInputResult inputResult = ReadValue();
-                !inputResult.IsRequestTermination();
-                PrintMenu(), inputResult = ReadValue())
+            foreach (ApplicationInputResult inputResult in TakeInput(
+                () => _ioProcessor.ReadValue(),
+                PrintMenu))
             {
-                string value = inputResult.Value.ToLower();
-                if (value == "p")
-                {
-                    PrintAnimals();
-                }
-                else if (value == "a")
-                {
-                    AddAnimals();
-                }
-                else
+                IApplicationAction? action = actions
+                    .FirstOrDefault(action =>
+                        action.Key.Equals(inputResult, StringComparison.CurrentCultureIgnoreCase));
+                if (action is null)
                 {
                     NotifyUnknownInput();
+                    continue;
                 }
+                action.Execute(_ioProcessor, _animalCollection);
             }
         }
 
-        private ApplicationInputResult ReadValue()
+        private IEnumerable<ApplicationInputResult> TakeInput(
+            Func<ApplicationInputResult> inputResultGenerator,
+            Action? beforeTakeInput = null)
         {
-            string value = textReader.ReadLine()
-                ?? throw new ApplicationException("입력을 받을 수 없습니다.");
-            return new ApplicationInputResult(value);
+            bool canTakeInput = true;
+            while (canTakeInput)
+            {
+                if (beforeTakeInput is not null)
+                {
+                    beforeTakeInput();
+                }
+                ApplicationInputResult inputResult = inputResultGenerator();
+                canTakeInput = inputResult.IsRequestTermination();
+                if (canTakeInput)
+                {
+                    yield return inputResult;
+                }
+            }
         }
 
         private void PrintMenu()
         {
-            Console.WriteLine("P: 동물 정보 출력하기");
-            Console.WriteLine("A: 동물 정보 등록하기");
-            Console.WriteLine("Q: 종료");
-        }
-
-        private void PrintAnimals()
-        {
-            int animalCount = _animalCollection.FindAllAnimals().Count();
-            if (animalCount == 0)
-            {
-                Console.WriteLine("아직 등록된 동물이 없습니다.");
-                return;
-            }
-            foreach (Animal animal in _animalCollection.FindAllAnimals())
-            {
-                Console.WriteLine($"| 이름: {animal.Name}\t\t| 종: {animal.Species}\t\t |");
-            }
-        }
-
-        private void AddAnimals()
-        {
-            Console.Write("동물의 이름을 입력해 주세요: ");
-            string name = ReadValue();
-            while (string.IsNullOrWhiteSpace(name))
-            {
-                Console.WriteLine("정확한 동물의 이름을 입력해 주세요.");
-                Console.Write("동물의 이름을 입력해 주세요: ");
-                name = ReadValue();
-            }
-            Console.Write("동물의 종을 입력해 주세요: ");
-            string species = ReadValue();
-            while (string.IsNullOrWhiteSpace(species))
-            {
-                Console.WriteLine("정확한 동물의 종을 입력해 주세요.");
-                Console.Write("동물의 종을 입력해 주세요: ");
-                species = ReadValue();
-            }
-            string id = Guid.NewGuid().ToString();
-            Animal animal = new(id, name, species);
-            if (_animalCollection.AddAnimal(animal))
-            {
-                Console.WriteLine("동물 정보가 등록되었습니다.");
-            }
-            else
-            {
-                Console.WriteLine("중복된 동물 정보가 이미 등록돼 있습니다.");
-            }
+            _ioProcessor.WriteLines(actions
+                .Select(action => $"{action.Key.ToUpper()}: {action.Description}")
+                .Append("Q: 종료"));
         }
 
         private void NotifyUnknownInput()
         {
-            Console.WriteLine("해당하는 명령어를 찾을 수 없습니다.");
+            _ioProcessor.WriteLines("해당하는 명령어를 찾을 수 없습니다.");
         }
 
-        private class ApplicationInputResult(string value)
+        private record DefaultApplicationInputResult(string Value) : ApplicationInputResult(Value)
         {
-            public string Value { get; } = value;
-
-            public bool IsRequestTermination()
+            public override bool IsRequestTermination()
             {
                 return Value.Equals("q", StringComparison.CurrentCultureIgnoreCase);
             }
+        }
 
-            public static implicit operator string(ApplicationInputResult inputResult)
+        private class DefaultApplicationInputResultProvider : IApplicationInputResultProvider
+        {
+            public ApplicationInputResult Provide(string value)
             {
-                return inputResult.Value;
+                return new DefaultApplicationInputResult(value);
+            }
+        }
+    }
+
+    public abstract record ApplicationInputResult(string Value)
+    {
+        public abstract bool IsRequestTermination();
+
+        public static implicit operator string(ApplicationInputResult inputResult)
+        {
+            return inputResult.Value;
+        }
+    }
+
+    public interface IApplicationInputResultProvider
+    {
+        public ApplicationInputResult Provide(string value);
+    }
+
+    public class IoProcessor(
+        TextWriter writer,
+        TextReader reader,
+        IApplicationInputResultProvider inputResultProvider)
+    {
+        public ApplicationInputResult ReadValue(string? query = null)
+        {
+            if (query is not null)
+            {
+                writer.Write(query);
+            }
+            string value = reader.ReadLine()
+                ?? throw new ApplicationException("입력을 받을 수 없습니다.");
+            return inputResultProvider.Provide(value);
+        }
+
+        public void WriteLines(params string[] lines)
+        {
+            foreach (string line in lines)
+            {
+                writer.WriteLine(line);
+            }
+        }
+
+        public void WriteLines(IEnumerable<string> lines)
+        {
+            foreach (string line in lines)
+            {
+                writer.WriteLine(line);
             }
         }
     }

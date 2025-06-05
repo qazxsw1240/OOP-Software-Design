@@ -6,7 +6,7 @@ namespace Zoo
     {
         private static void Main()
         {
-            Application application = new(Console.In);
+            Application application = new(Console.Out, Console.In, []);
             application.Start();
         }
     }

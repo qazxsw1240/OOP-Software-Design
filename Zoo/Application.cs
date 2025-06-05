@@ -46,7 +46,7 @@ namespace Zoo
                     beforeTakeInput();
                 }
                 ApplicationInputResult inputResult = inputResultGenerator();
-                canTakeInput = inputResult.IsRequestTermination();
+                canTakeInput = !inputResult.IsRequestTermination();
                 if (canTakeInput)
                 {
                     yield return inputResult;

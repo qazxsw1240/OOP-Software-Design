@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurant", "Restaurant\Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArithmeticCalculator", "ArithmeticCalculator\ArithmeticCalculator.csproj", "{98F3FE1B-7C48-4DCF-A67B-A5991BFDB27C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieBooking", "MovieBooking\MovieBooking.csproj", "{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,8 +85,23 @@ Global
 		{98F3FE1B-7C48-4DCF-A67B-A5991BFDB27C}.Release|x64.Build.0 = Release|Any CPU
 		{98F3FE1B-7C48-4DCF-A67B-A5991BFDB27C}.Release|x86.ActiveCfg = Release|Any CPU
 		{98F3FE1B-7C48-4DCF-A67B-A5991BFDB27C}.Release|x86.Build.0 = Release|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Debug|x64.Build.0 = Debug|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Release|x64.ActiveCfg = Release|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Release|x64.Build.0 = Release|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{E503B1A9-295E-4331-A5EB-1E0AF2C03F7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C30F47F5-572B-49DB-83F5-9A7C738DA4DA}
 	EndGlobalSection
 EndGlobal

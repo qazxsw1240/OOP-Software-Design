@@ -13,7 +13,7 @@ namespace MovieBooking.Entity
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"DataSource=movies.db");
+            optionsBuilder.UseSqlite("DataSource=movies.db");
         }
     }
 
@@ -23,7 +23,7 @@ namespace MovieBooking.Entity
         {
             DbContextOptionsBuilder<EntityDbContext> optionsBuilder = new();
             optionsBuilder.UseSqlite("Data Source=movies.db");
-            return new EntityDbContext(optionsBuilder.Options);
+            return new(optionsBuilder.Options);
         }
     }
 }

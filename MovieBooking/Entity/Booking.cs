@@ -14,12 +14,12 @@ namespace MovieBooking.Entity
         [Required]
         private int MovieId { get; set; }
 
-        public required Movie Movie { get; set; }
+        public required Movie Movie { get; init; }
 
         [Required]
         private int UserId { get; set; }
 
-        public required User User { get; set; }
+        public required User User { get; init; }
 
         [Required]
         public TimeOnly ShowTime { get; set; }

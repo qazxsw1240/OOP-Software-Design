@@ -11,14 +11,16 @@ namespace MovieBooking.Entity
         [Key]
         public int Id { get; private set; }
 
-        public string Title { get; set; } = "N/A";
+        [MaxLength(128)]
+        public string Title { get; init; } = "N/A";
 
-        public string Director { get; set; } = "N/A";
+        [MaxLength(128)]
+        public string Director { get; init; } = "N/A";
 
         [Required]
-        public TimeSpan RunningTime { get; set; }
+        public TimeSpan RunningTime { get; init; }
 
         [Required]
-        public DateOnly ReleaseDate { get; set; }
+        public DateOnly ReleaseDate { get; init; }
     }
 }

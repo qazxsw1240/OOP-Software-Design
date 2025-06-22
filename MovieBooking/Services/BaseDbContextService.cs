@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 
 namespace MovieBooking.Services
 {
-
     public abstract class BaseDbContextService<TDbContext>(TDbContext context) : IHostedLifecycleService
         where TDbContext : DbContext
     {
@@ -14,7 +13,6 @@ namespace MovieBooking.Services
 
         public virtual async Task StartingAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.EnsureDeletedAsync(cancellationToken);
             await _context.Database.EnsureCreatedAsync(cancellationToken);
         }
 

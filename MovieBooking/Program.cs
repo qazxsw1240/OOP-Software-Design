@@ -25,7 +25,7 @@ namespace MovieBooking
                 .AddDbContextCollection()
                 .AddSingleton<Application>()
                 .AddHostedService<ApplicationService>()
-                .AddLogging(builder => builder.ClearProviders());
+                .AddLogging(loggingBuilder => loggingBuilder.ClearProviders());
             using IHost app = builder.Build();
             await app.RunAsync();
         }

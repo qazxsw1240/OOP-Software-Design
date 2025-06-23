@@ -1,14 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieBooking.Entity
 {
-    [Index(nameof(MovieId), nameof(UserId), nameof(ShowTime), IsUnique = true)]
+    using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
+
+    [Index(nameof(MovieId), nameof(UserId), nameof(ShowTimeId), IsUnique = true)]
     public class Booking
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; private set; }
 
         [Required]
@@ -22,6 +23,8 @@ namespace MovieBooking.Entity
         public required User User { get; init; }
 
         [Required]
-        public TimeOnly ShowTime { get; set; }
+        private int ShowTimeId { get; set; }
+
+        public required ShowTime ShowTime { get; set; }
     }
 }

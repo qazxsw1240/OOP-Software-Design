@@ -11,9 +11,19 @@ namespace MovieBooking.Entity
 
         public DbSet<Booking> Bookings { get; set; }
 
+        public DbSet<ShowTime> ShowTimes { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite("DataSource=movies.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<Movie>().ToTable("Movies");
+            modelBuilder.Entity<Booking>().ToTable("Bookings");
+            modelBuilder.Entity<ShowTime>().ToTable("ShowTimes");
         }
     }
 

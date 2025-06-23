@@ -1,14 +1,16 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieBooking.Entity
 {
+    using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
+
     [Index(nameof(Title), nameof(Director), IsUnique = true)]
     public class Movie
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; private set; }
 
         [MaxLength(128)]

@@ -4,5 +4,5 @@ using MovieBooking.Entity;
 
 namespace MovieBooking.Services
 {
-    public record BookingCreateRequest(User User, Movie Movie, TimeOnly ShowTime);
+    public record BookingCreateRequest(User User, Movie Movie, ShowTime ShowTime);
 }

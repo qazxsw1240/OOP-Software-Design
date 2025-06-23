@@ -39,6 +39,7 @@ namespace MovieBooking.Services
         private static IServiceCollection AddBookingService(this IServiceCollection services)
         {
             services.TryAddSingleton<EntityDbContext>();
+            services.TryAddSingleton<IRepository<ShowTime>, ShowTimeRepository>();
             services.TryAddSingleton<IRepository<Booking>, BookingRepository>();
             services.TryAddSingleton<IBookingService, BookingService>();
             return services;

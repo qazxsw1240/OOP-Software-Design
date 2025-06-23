@@ -23,7 +23,7 @@ namespace MovieBooking.Services
         public async Task StartingAsync(CancellationToken cancellationToken)
         {
             await dbContext.Database.EnsureCreatedAsync(cancellationToken);
-            DbInitializer.InitializeAsync(dbContext);
+            DbInitializer.Initialize(dbContext);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

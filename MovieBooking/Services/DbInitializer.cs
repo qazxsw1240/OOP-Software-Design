@@ -1,48 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
 
 using MovieBooking.Entity;
 
-namespace MovieBooking.Services.Movies
+namespace MovieBooking.Services
 {
-    public class MovieService(EntityDbContext context)
-        : BaseDbContextService<EntityDbContext>(context), IMovieService
+    public static class DbInitializer
     {
-        public IEnumerable<Movie> GetAllMovies()
+        public static void InitializeAsync(EntityDbContext dbContext)
         {
-            return _context.Movies;
-        }
-
-        public async Task<IEnumerable<Movie>> GetMoviesByName(
-            string name,
-            CancellationToken cancellationToken = default)
-        {
-            return await _context.Movies
-                .Where(movie => movie.Title == name)
-                .ToListAsync(cancellationToken);
-        }
-
-        public async Task<IEnumerable<Movie>> GetMoviesByDirectorAsync(
-            string director,
-            CancellationToken cancellationToken = default)
-        {
-            return await _context.Movies
-                .Where(movie => movie.Director == director)
-                .ToListAsync(cancellationToken);
-        }
-
-        public override async Task StartingAsync(CancellationToken cancellationToken)
-        {
-            await base.StartingAsync(cancellationToken);
-            if (await _context.Movies.AnyAsync(cancellationToken))
+            if (dbContext.Movies.Any())
             {
                 return;
             }
-            await _context.Movies.AddRangeAsync(
+            IEnumerable<Movie> movies = [
                 new Movie
                 {
                     Title = "Inception",
@@ -147,8 +118,10 @@ namespace MovieBooking.Services.Movies
                     Director = "Martin Scorsese",
                     RunningTime = new(2, 26, 0),
                     ReleaseDate = new(1990, 9, 19)
-                });
-            await _context.SaveChangesAsync(cancellationToken);
+                }
+            ];
+            dbContext.Movies.AddRange(movies);
+            dbContext.SaveChanges();
         }
     }
 }

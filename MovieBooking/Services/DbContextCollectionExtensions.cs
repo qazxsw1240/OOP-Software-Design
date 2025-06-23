@@ -2,9 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using MovieBooking.Entity;
-using MovieBooking.Services.Bookings;
-using MovieBooking.Services.Movies;
-using MovieBooking.Services.Users;
+using MovieBooking.Repositories;
 
 namespace MovieBooking.Services
 {
@@ -12,13 +10,37 @@ namespace MovieBooking.Services
     {
         public static IServiceCollection AddDbContextCollection(this IServiceCollection services)
         {
-            services.AddDbContextFactory<EntityDbContext>();
+            services.AddDbContext<EntityDbContext>();
+            services.TryAddSingleton<IDbContextCollection, DbContextCollectionService>();
+            services
+                .AddUserService()
+                .AddMovieService()
+                .AddBookingService()
+                .AddHostedService<DbContextCollectionService>();
+            return services;
+        }
+
+        private static IServiceCollection AddUserService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<EntityDbContext>();
+            services.TryAddSingleton<IRepository<User>, UserRepository>();
             services.TryAddSingleton<IUserService, UserService>();
+            return services;
+        }
+
+        private static IServiceCollection AddMovieService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<EntityDbContext>();
+            services.TryAddSingleton<IRepository<Movie>, MovieRepository>();
             services.TryAddSingleton<IMovieService, MovieService>();
+            return services;
+        }
+
+        private static IServiceCollection AddBookingService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<EntityDbContext>();
+            services.TryAddSingleton<IRepository<Booking>, BookingRepository>();
             services.TryAddSingleton<IBookingService, BookingService>();
-            services.TryAddSingleton<IDbContextCollection, DbContextCollection>();
-            services.AddHostedService<MovieService>();
-            services.AddHostedService<UserService>();
             return services;
         }
     }

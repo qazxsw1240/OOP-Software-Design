@@ -1,8 +1,4 @@
-﻿using MovieBooking.Services.Bookings;
-using MovieBooking.Services.Movies;
-using MovieBooking.Services.Users;
-
-namespace MovieBooking.Services
+﻿namespace MovieBooking.Services
 {
     public interface IDbContextCollection
     {

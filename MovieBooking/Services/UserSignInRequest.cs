@@ -1,4 +1,4 @@
-﻿namespace MovieBooking.Services.Users
+﻿namespace MovieBooking.Services
 {
     public record UserSignInRequest(string UserName);
 }

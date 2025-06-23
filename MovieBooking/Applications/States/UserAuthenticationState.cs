@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using MovieBooking.Entity;
 using MovieBooking.Services;
-using MovieBooking.Services.Users;
 
 namespace MovieBooking.Applications.States
 {
@@ -17,7 +16,8 @@ namespace MovieBooking.Applications.States
 
         protected override List<IApplicationStateAction<IApplicationState?>> GetActions()
         {
-            return [
+            return
+            [
                 new UserRegistrationAction(_ioProcessor, _userService, this),
                 new UserSignInAction(_ioProcessor, dbContextCollection, this)
             ];
@@ -47,29 +47,31 @@ namespace MovieBooking.Applications.States
                 {
                     try
                     {
-                        userName = await ioProcessor.ReadLineAsync("User name (CTRL + Z to cancel): ", cancellationToken);
+                        userName = await ioProcessor.ReadLineAsync(
+                            "User name (CTRL + Z to cancel): ",
+                            cancellationToken);
                         if (string.IsNullOrWhiteSpace(userName))
                         {
                             await ioProcessor.WriteLineAsync("Invalid name. Try again.", cancellationToken);
                             userName = null;
                             continue;
                         }
-                        if (await userService.IsUserRegistered(userName, cancellationToken))
+                        if (!userService.IsUserRegistered(userName))
                         {
-                            await ioProcessor.WriteLineAsync(
-                                string.Format("The name {0} is already in use. Try again.", userName),
-                                cancellationToken);
-                            userName = null;
                             continue;
                         }
+                        await ioProcessor.WriteLineAsync(
+                            $"The name {userName} is already in use. Try again.",
+                            cancellationToken);
+                        userName = null;
                     }
                     catch (IOException)
                     {
                         return nextState;
                     }
                 }
-                UserRegistrationRequest request = new(userName);
-                await userService.RegisterUser(request, cancellationToken);
+                UserSignUpRequest request = new(userName);
+                userService.SignUp(request);
                 return nextState;
             }
         }
@@ -94,7 +96,7 @@ namespace MovieBooking.Applications.States
                             "User name (CTRL + Z to cancel): ",
                             cancellationToken);
                         UserSignInRequest request = new(userName);
-                        user = await _userService.SignInAsync(request, cancellationToken);
+                        user = _userService.SignIn(request);
                     }
                     catch (UserSignInFailedException)
                     {
@@ -107,8 +109,8 @@ namespace MovieBooking.Applications.States
                 }
                 await ioProcessor.WriteLinesAsync(
                     [
-                        string.Format("Welcome, {0}.", user.Name),
-                        string.Format("Last login at {0} (UTC)", user.LastLoginAt)
+                        $"Welcome, {user.Name}.",
+                        $"Last login at {user.LastLoginAt} (UTC)"
                     ],
                     cancellationToken);
                 return new MainEntryState(ioProcessor, dbContextCollection, user);

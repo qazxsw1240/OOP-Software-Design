@@ -8,9 +8,7 @@ namespace MovieBooking.Utility
     {
         private readonly List<ValidatorStep> _steps = [.. predicates.Select(CreateStep)];
 
-        public Validator() : this([])
-        {
-        }
+        public Validator() : this([]) {}
 
         public Validator<T> With(Predicate<T> predicate)
         {
@@ -26,11 +24,7 @@ namespace MovieBooking.Utility
 
         public bool Test(T value)
         {
-            if (_steps.Count == 0)
-            {
-                return true;
-            }
-            return _steps.All(step => step.Predicate(value));
+            return _steps.Count == 0 || _steps.All(step => step.Predicate(value));
         }
 
         public void Check(T value)
@@ -50,7 +44,7 @@ namespace MovieBooking.Utility
 
         private static ValidatorStep CreateStep(Predicate<T> predicate)
         {
-            return new(predicate, value => new ArgumentException("Cannot pass all predicates."));
+            return new(predicate, _ => new ArgumentException("Cannot pass all predicates."));
         }
 
         private record struct ValidatorStep(

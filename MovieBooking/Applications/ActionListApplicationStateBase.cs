@@ -8,11 +8,14 @@ using MovieBooking.Applications.States;
 
 namespace MovieBooking.Applications
 {
+    [Obsolete("Use ListableApplicationState instead")]
     public abstract class ActionListApplicationStateBase(IoProcessor ioProcessor) : IApplicationState
     {
         protected readonly IoProcessor _ioProcessor = ioProcessor;
 
-        public async Task<IApplicationState?> HandleAsync(CancellationToken cancellationToken = default)
+        public async Task<IApplicationState?> HandleAsync(
+            ApplicationStateStack stack,
+            CancellationToken cancellationToken = default)
         {
             List<IApplicationStateAction<IApplicationState?>> actions = GetActions();
             int index = -1;
@@ -24,7 +27,7 @@ namespace MovieBooking.Applications
                         .Select(action => action.Name)
                         .Append("Quit")
                         .Index()
-                        .Select(pair => string.Format("{0}. {1}", pair.Index + 1, pair.Item)),
+                        .Select(pair => $"{pair.Index + 1}. {pair.Item}"),
                     cancellationToken);
                 try
                 {

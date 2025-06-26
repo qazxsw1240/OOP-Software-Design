@@ -5,6 +5,13 @@ namespace MovieBooking.Applications.States
 {
     public interface IApplicationState
     {
-        public Task<IApplicationState?> HandleAsync(CancellationToken cancellationToken = default);
+        public Task<IApplicationState?> HandleAsync(
+            ApplicationStateStack stack,
+            CancellationToken cancellationToken = default);
+    }
+
+    public interface IListableApplicationState : IApplicationState
+    {
+        public string Name { get; }
     }
 }

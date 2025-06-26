@@ -11,7 +11,9 @@ namespace MovieBooking.Applications.States
         IDbContextCollection dbContextCollection,
         User user) : IApplicationState
     {
-        public Task<IApplicationState?> HandleAsync(CancellationToken cancellationToken = default)
+        public Task<IApplicationState?> HandleAsync(
+            ApplicationStateStack stack,
+            CancellationToken cancellationToken = default)
         {
             return Task.FromResult<IApplicationState?>(new MovieState(ioProcessor, dbContextCollection, user));
         }

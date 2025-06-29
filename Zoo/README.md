@@ -70,3 +70,77 @@
     && Species == other.Species;
     ```
     이래 되어있는데, 그냥 ID만 비교해도 되지 않을..까?
+
+## 2차시 "직접 해보기"
+
+1. Zoo 프로젝트 내의 클래스 구현에서 오버라이드와 오버로드를 찾는다.
+
+- Zoo.Animal
+```csharp
+public override bool Equals(object? obj)
+public override int GetHashCode()
+```
+- Zoo.Species
+```csharp
+public override bool Equals(object? obj)
+public override int GetHashCode()
+public override string ToString()
+
+public static bool operator ==(Species x, Species y)
+public static bool operator !=(Species x, Species y)
+//연산자 overload도 클래스 동작 정의에 들가는지는 모르겠는데 일단 넣어놓음 ㅎㅎ
+```
+
+2. 오버라이드된 구현과 기존 구현의 차이를 비교한다.
+
+#### Equals
+- 기존 구현 -> `object.Equals`
+    - 주소가 같은지 비교
+- Override 구현
+    - 개체의 내부 상태 비교(논리적 동등성 -> 설령 참조가 다르더라도 상태가 똑같다면 같은 개체)
+```csharp
+// Animal
+public override bool Equals(object? obj)
+{
+    if (ReferenceEquals(this, obj)) return true;
+    if (obj is not Animal other) return false;
+    return Id == other.Id && Name == other.Name && Species == other.Species;
+}
+// Species
+public override bool Equals(object? obj)
+{
+    if (ReferenceEquals(this, obj)) return true;
+    if (obj is not Species other) return false;
+    return Value.Equals(other.Value);
+}
+```
+
+#### GetHashCode
+- 기존 구현 -> `object.GetHashCode`
+    - 개체 주소 반환(HashCode)
+- Override 구현
+    - 개체의 필드 값을 조합하여 해시코드 생성
+```csharp
+// Animal
+public override int GetHashCode()
+{
+    return HashCode.Combine(Id, Name, Species);
+}
+// Species
+public override int GetHashCode()
+{
+    return Value.GetHashCode();
+}
+```
+
+#### ToString
+- 기존 구현 -> `object.ToString`
+    - 클래스 이름 반환
+- Override 구현
+    - Species의 Value(종 이름) 반환
+
+3. 확장을 고려한다면 무엇을 오버라이드 해야하는지 분석한다.
+
+상태 확장시에는 `Equals`, `GetHashCode`, `ToString`, 연산자 등의 override 여부를 점검해야한다. 특히 어떤 유명한 자바 책에서는 Equals는 재정의 하는걸 권장하고 있고, Equals 재정의 할거면 GetHashCode는 거의 필수로 재정의해야한다 쓰여있다.
+
+## 3차시 "직접 해보기"
